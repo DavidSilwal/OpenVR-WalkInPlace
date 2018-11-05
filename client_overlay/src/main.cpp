@@ -244,7 +244,7 @@ int main(int argc, char *argv[]) {
 
 		QQmlEngine qmlEngine;
 
-		walkinplace::OverlayController* controller = walkinplace::OverlayController::createInstance(desktopMode, noSound);
+		walkinplace::OverlayController* controller = walkinplace::OverlayController::createInstance(desktopMode, directmode);
 		controller->Init(&qmlEngine);
 
 		QQmlComponent component(&qmlEngine, QUrl::fromLocalFile("res/qml/mainwidget.qml"));

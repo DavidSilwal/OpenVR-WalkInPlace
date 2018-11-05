@@ -101,6 +101,8 @@ namespace vrwalkinplace {
 
 		struct Request_OpenVR_DeviceAdded {
 			uint32_t deviceId;
+			bool leftRole;
+			bool reinit;
 		};
 
 		struct Request_OpenVR_EnableDriver {

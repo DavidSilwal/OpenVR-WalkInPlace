@@ -29,7 +29,7 @@ MyMainViewPage {
         stepDetectionEnableToggle.checked = WalkInPlaceTabController.isStepDetectionEnabled()
         gameTypeDialog.currentIndex = WalkInPlaceTabController.getGameType()
         hmdTypeDialog.currentIndex = WalkInPlaceTabController.getHMDType()
-        controlSelect.currentIndex = WalkInPlaceTabController.getControlSelect()
+        controlSelect.currentIndex = WalkInPlaceTabController.getControlSelect() == 0 ? 1 : 0
         buttonMode.currentIndex = WalkInPlaceTabController.getAccuracyButtonFlip() ? 0 : 1
         accuracyButtonDialog.currentIndex = WalkInPlaceTabController.getAccuracyButton()
         buttonControlSelect.currentIndex = WalkInPlaceTabController.getAccuracyButtonControlSelect()
@@ -179,11 +179,15 @@ MyMainViewPage {
                         Layout.preferredWidth: 250
                         Layout.fillWidth: true
                         displayText: currentText
-                        model: ["1st Controller", "2nd Controller"]
+                        model: ["Left Controller", "Right Controller"]
                         onCurrentIndexChanged: {
-                            if (currentIndex >= 0) { 
-                                WalkInPlaceTabController.setControlSelect(currentIndex)                        
+                            if (currentIndex == 0) { 
+                                WalkInPlaceTabController.setControlSelect(1)   
                             } 
+                            if (currentIndex == 1) { 
+                                WalkInPlaceTabController.setControlSelect(0)   
+                            } 
+                            //switchVirtualHandInput.openPopup()
                         }
                     }
 
@@ -542,6 +546,53 @@ MyMainViewPage {
         }
         function openPopup() {
             walkInPlaceNewProfileName.text = ""
+            open()
+        }
+    }
+
+    MyDialogOkCancelPopup {
+        id: switchVirtualHandInput
+        dialogTitle: "Reinit Virtual Controller Hand Role?"
+        dialogWidth: 800
+        dialogHeight: 600
+        dialogContentItem: ColumnLayout {
+            RowLayout {
+                MyText {
+                    text: "This will power off the current"
+                } 
+            }
+            RowLayout {
+                MyText {
+                    text: "left/right virtual controller and"
+                } 
+            }
+            RowLayout {
+                MyText {
+                    text: "set it to the selected option."
+                } 
+            }
+            RowLayout {
+                MyText {
+                    text: "After the new virtual controller is added,"
+                } 
+            }
+            RowLayout {
+                MyText {
+                    text: "its best if you power off and on the"
+                } 
+            }
+            RowLayout {
+                MyText {
+                    text: "physical left/right controller."
+                }
+            }
+        }
+        onClosed: {
+            if (okClicked) {
+                WalkInPlaceTabController.reinitVirContToCurHand()
+            }
+        }
+        function openPopup() {
             open()
         }
     }

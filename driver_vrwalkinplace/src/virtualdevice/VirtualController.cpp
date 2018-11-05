@@ -7,8 +7,6 @@
 namespace vrwalkinplace {
 	namespace driver {
 
-
-
 		VirtualController::VirtualController() {
 
 		}
@@ -133,6 +131,9 @@ namespace vrwalkinplace {
 			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Grip].insert(std::make_pair(ButtonEventType::ButtonPressed, 0));
 			CreateBooleanComponent(m_propertyContainerHandle, "/input/grip/click", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Grip][ButtonEventType::ButtonPressed]);
 
+			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Grip].insert(std::make_pair(ButtonEventType::ButtonTouched, 0));
+			CreateBooleanComponent(m_propertyContainerHandle, "/input/grip/touch", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Grip][ButtonEventType::ButtonTouched]);
+
 			// app button component
 			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_ApplicationMenu].insert(std::make_pair(ButtonEventType::ButtonPressed, 0));
 			CreateBooleanComponent(m_propertyContainerHandle, "/input/application_menu/click", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_ApplicationMenu][ButtonEventType::ButtonPressed]);
@@ -179,76 +180,10 @@ namespace vrwalkinplace {
 		}
 		
 		void VirtualController::mapInputDevice(uint32_t unObjectId, bool leftRole) {
-
-			m_openvrId = unObjectId;
-			m_propertyContainerHandle = vr::VRProperties()->TrackedDeviceToPropertyContainer(m_openvrId);
-
-			// A button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad].insert(std::make_pair(ButtonEventType::ButtonPressed, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/trackpad/click", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad][ButtonEventType::ButtonPressed]);
-
-			// A button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad].insert(std::make_pair(ButtonEventType::ButtonTouched, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/trackpad/touch", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad][ButtonEventType::ButtonTouched]);
-
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad].insert(std::make_pair(ButtonEventType::ButtonUnpressed, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/trackpad/click", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad][ButtonEventType::ButtonUnpressed]);
-
-			// A button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad].insert(std::make_pair(ButtonEventType::ButtonUntouched, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/trackpad/touch", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad][ButtonEventType::ButtonUntouched]);
-
-
-			// A axis component
-			m_ulScalarComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad].insert(std::make_pair(ButtonEventType::TrackpadX, 0));
-			CreateScalarComponent(m_propertyContainerHandle, "/input/trackpad/x", &m_ulScalarComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad][ButtonEventType::TrackpadX], vr::VRScalarType_Absolute, vr::VRScalarUnits_NormalizedTwoSided);
-
-			// A axis component
-			m_ulScalarComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad].insert(std::make_pair(ButtonEventType::TrackpadY, 0));
-			CreateScalarComponent(m_propertyContainerHandle, "/input/trackpad/y", &m_ulScalarComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Touchpad][ButtonEventType::TrackpadY], vr::VRScalarType_Absolute, vr::VRScalarUnits_NormalizedTwoSided);
-
-			// Joystick button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Knuckles_JoyStick].insert(std::make_pair(ButtonEventType::ButtonPressed, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/joystick/click", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_A][ButtonEventType::ButtonPressed]);
-
-			// Joystick button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Knuckles_JoyStick].insert(std::make_pair(ButtonEventType::ButtonTouched, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/joystick/touch", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_A][ButtonEventType::ButtonTouched]);
-
-			// Joystick button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Knuckles_JoyStick].insert(std::make_pair(ButtonEventType::ButtonUnpressed, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/joystick/click", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_A][ButtonEventType::ButtonUnpressed]);
-
-			// Joystick button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Knuckles_JoyStick].insert(std::make_pair(ButtonEventType::ButtonUntouched, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/joystick/touch", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_A][ButtonEventType::ButtonUntouched]);
-
-			// joystick axis component
-			m_ulScalarComponentsMap[vr::EVRButtonId::k_EButton_Knuckles_JoyStick].insert(std::make_pair(ButtonEventType::JoystickX, 0));
-			CreateScalarComponent(m_propertyContainerHandle, "/input/joystick/x", &m_ulScalarComponentsMap[vr::EVRButtonId::k_EButton_Knuckles_JoyStick][ButtonEventType::JoystickX], vr::VRScalarType_Absolute, vr::VRScalarUnits_NormalizedTwoSided);
-
-			// joystick axis component
-			m_ulScalarComponentsMap[vr::EVRButtonId::k_EButton_Knuckles_JoyStick].insert(std::make_pair(ButtonEventType::JoystickY, 0));
-			CreateScalarComponent(m_propertyContainerHandle, "/input/joystick/y", &m_ulScalarComponentsMap[vr::EVRButtonId::k_EButton_Knuckles_JoyStick][ButtonEventType::JoystickY], vr::VRScalarType_Absolute, vr::VRScalarUnits_NormalizedTwoSided);
-
-			// Trigger button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Trigger].insert(std::make_pair(ButtonEventType::ButtonPressed, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/trigger/click", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Trigger][ButtonEventType::ButtonPressed]);
-
-			// Trigger button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Trigger].insert(std::make_pair(ButtonEventType::ButtonTouched, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/trigger/touch", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_SteamVR_Trigger][ButtonEventType::ButtonTouched]);
-
-			// Grip button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Grip].insert(std::make_pair(ButtonEventType::ButtonPressed, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/grip/click", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Grip][ButtonEventType::ButtonPressed]);
-
-			// Grip button component
-			m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Grip].insert(std::make_pair(ButtonEventType::ButtonTouched, 0));
-			CreateBooleanComponent(m_propertyContainerHandle, "/input/grip/touch", &m_ulBoolComponentsMap[vr::EVRButtonId::k_EButton_Grip][ButtonEventType::ButtonTouched]);
-
-
+			//m_openvrId = unObjectId;
+			//m_propertyContainerHandle = vr::VRProperties()->TrackedDeviceToPropertyContainer(m_openvrId);
 		}
+
 		void VirtualController::updatePose(vr::DriverPose_t new_pose)
 		{
 			//LOG(INFO) << "new pose values - pos(x,y,z): (" << new_pose.vecPosition[0] << "," << new_pose.vecPosition[1] << "," << new_pose.vecPosition[2] << ") - vel(x,y,x): (" << new_pose.vecVelocity[0] << "," << new_pose.vecVelocity[1] << "," << new_pose.vecVelocity[2] << ")";
@@ -266,20 +201,17 @@ namespace vrwalkinplace {
 		void VirtualController::updateState(vr::VRControllerState_t new_state) {
 
 			if (new_state.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_Grip)) {
+				LOG(INFO) << "Grip button pushed on track controller";
 				if (!(currentState.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_Grip))) {
+					LOG(INFO) << "Grip button pushed on virtual controller";
+					sendButtonEvent(ButtonEventType::ButtonTouched, vr::EVRButtonId::k_EButton_Grip, 0);
 					sendButtonEvent(ButtonEventType::ButtonPressed, vr::EVRButtonId::k_EButton_Grip, 0);
 				}
 			}
 			else if (currentState.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_Grip)) {
+				//LOG(INFO) << "Grip button unpushed on virtual controller";
 				sendButtonEvent(ButtonEventType::ButtonUnpressed, vr::EVRButtonId::k_EButton_Grip, 0);
-			}
-			if (new_state.ulButtonPressed& vr::ButtonMaskFromId(vr::EVRButtonId::k_EButton_ApplicationMenu)) {
-				if (!(currentState.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_ApplicationMenu))) {
-					sendButtonEvent(ButtonEventType::ButtonPressed, vr::EVRButtonId::k_EButton_ApplicationMenu, 0);
-				}
-			}
-			else if (currentState.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_ApplicationMenu)) {
-				sendButtonEvent(ButtonEventType::ButtonUnpressed, vr::EVRButtonId::k_EButton_ApplicationMenu, 0);
+				sendButtonEvent(ButtonEventType::ButtonUntouched, vr::EVRButtonId::k_EButton_Grip, 0);
 			}
 			if (new_state.ulButtonPressed& vr::ButtonMaskFromId(vr::EVRButtonId::k_EButton_SteamVR_Touchpad)) {
 				if (!(currentState.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_SteamVR_Touchpad))) {
@@ -304,6 +236,14 @@ namespace vrwalkinplace {
 			}
 			else if (currentState.ulButtonTouched& vr::ButtonMaskFromId(vr::k_EButton_SteamVR_Trigger)) {
 				sendButtonEvent(ButtonEventType::ButtonUntouched, vr::EVRButtonId::k_EButton_SteamVR_Trigger, 0);
+			}
+			if (new_state.ulButtonTouched& vr::ButtonMaskFromId(vr::k_EButton_SteamVR_Trigger) && new_state.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_Grip)) {
+				//if (!(currentState.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_ApplicationMenu))) {
+					sendButtonEvent(ButtonEventType::ButtonPressed, vr::EVRButtonId::k_EButton_ApplicationMenu, 0);
+				//}
+			}
+			else if (currentState.ulButtonTouched& vr::ButtonMaskFromId(vr::k_EButton_SteamVR_Trigger) && currentState.ulButtonPressed& vr::ButtonMaskFromId(vr::k_EButton_Grip)) {
+				sendButtonEvent(ButtonEventType::ButtonUnpressed, vr::EVRButtonId::k_EButton_ApplicationMenu, 0);
 			}
 			currentState = new_state;
 			//currentState.ulButtonPressed = new_state.ulButtonPressed&(~vr::ButtonMaskFromId(vr::EVRButtonId::k_EButton_SteamVR_Touchpad));
@@ -332,7 +272,7 @@ namespace vrwalkinplace {
 		vr::EVRInputError VirtualController::CreateSkeletonComponent(vr::PropertyContainerHandle_t ulContainer, const char *pchName, const char *pchSkeletonPath, const char *pchBasePosePath, const vr::VRBoneTransform_t *pGripLimitTransforms, uint32_t unGripLimitTransformCount, vr::VRInputComponentHandle_t *pHandle) {
 			return vr::EVRInputError::VRInputError_None;
 		}
-
+		
 		vr::EVRInputError VirtualController::UpdateSkeletonComponent(vr::VRInputComponentHandle_t ulComponent, vr::EVRSkeletalMotionRange eMotionRange, const vr::VRBoneTransform_t *pTransforms, uint32_t unTransformCount) {
 			return vr::EVRInputError::VRInputError_None;
 		}
@@ -346,7 +286,7 @@ namespace vrwalkinplace {
 					uint64_t componentHandle = m_ulBoolComponentsMap[eButtonId][findType];
 					bool boolVal = (eventType == ButtonEventType::ButtonPressed || eventType == ButtonEventType::ButtonTouched);
 					vr::EVRInputError eVRIError = UpdateBooleanComponent(componentHandle, boolVal, eventTimeOffset);
-					//LOG(INFO) << "apply boolean event " << eButtonId << " on device " << m_openvrId;
+					LOG(INFO) << "apply boolean event " << (uint32_t)findType << " on button " << eButtonId << " on device " << m_openvrId;
 					if (eVRIError != vr::EVRInputError::VRInputError_None) {
 						LOG(INFO) << "VR INPUT ERROR: " << eVRIError;
 					}

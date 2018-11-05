@@ -65,7 +65,7 @@ namespace vrwalkinplace {
 											_this->_ipcEndpoints.insert({ clientId, queue });
 											reply.msg.ipc_ClientConnect.clientId = clientId;
 											reply.status = ipc::ReplyStatus::Ok;
-											LOG(INFO) << "New client connected: endpoint \"" << message.msg.ipc_ClientConnect.queueName << "\", cliendId " << clientId;
+											//LOG(INFO) << "New client connected: endpoint \"" << message.msg.ipc_ClientConnect.queueName << "\", cliendId " << clientId;
 										}
 										else {
 											reply.msg.ipc_ClientConnect.clientId = 0;
@@ -123,7 +123,7 @@ namespace vrwalkinplace {
 								case ipc::RequestType::OpenVR_DeviceAdded:
 								{
 									if (vr::VRServerDriverHost()) {
-										driver->openvr_deviceAdded(message.msg.ipc_DeviceAdded.deviceId, true);
+										driver->openvr_deviceAdded(message.msg.ipc_DeviceAdded.deviceId, message.msg.ipc_DeviceAdded.leftRole, message.msg.ipc_DeviceAdded.reinit);
 									}
 									break;
 								}

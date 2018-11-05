@@ -246,6 +246,7 @@ public slots:
 	void setGameStepType(int gameType);
 	void setHMDType(int gameType);
 	void setControlSelect(int control);
+	void reinitVirContToCurHand();
 	void disableController(bool val, int control);
 	void disableTracker(bool val, int control);
 	void setAccuracyButtonControlSelect(int control);

@@ -55,7 +55,7 @@ public:
 
 	static std::string getInstallDirectory() { return installDir; }
 
-	void openvr_deviceAdded(uint32_t unWhichDevice, bool leftRole);
+	void openvr_deviceAdded(uint32_t unWhichDevice, bool leftRole, bool reinit);
 	void openvr_poseUpdate(uint32_t unWhichDevice, const vr::DriverPose_t & pose, double eventTimeOffset);
 	void openvr_updateState(uint32_t unWhichDevice, vr::VRControllerState_t new_state, double eventTimeOffset);
 	void openvr_buttonEvent(uint32_t unWhichDevice, ButtonEventType eventType, vr::EVRButtonId eButtonId, double eventTimeOffset);
@@ -67,8 +67,10 @@ public:
 private:
 
 	VirtualController vr_locomotion1;
+	VirtualController vr_locomotion2;
 	uint64_t controlUsedId = vr::k_unTrackedDeviceIndexInvalid;
 	bool initDriver = false;
+	bool leftHandRole = true;
 
 	std::map<uint32_t,VirtualController> _openvrIdToVirtualControllerMap;
 

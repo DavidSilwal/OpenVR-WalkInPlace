@@ -219,10 +219,12 @@ namespace vrwalkinplace {
 		}
 	}
 
-	void VRWalkInPlace::openvrDeviceAdded(uint32_t deviceId) {
+	void VRWalkInPlace::openvrDeviceAdded(uint32_t deviceId, bool leftRole, bool reinit) {
 		if (_ipcServerQueue) {
 			ipc::Request message(ipc::RequestType::OpenVR_DeviceAdded);
 			message.msg.ipc_DeviceAdded.deviceId = deviceId;
+			message.msg.ipc_DeviceAdded.leftRole = leftRole;
+			message.msg.ipc_DeviceAdded.reinit = reinit;
 			_ipcServerQueue->send(&message, sizeof(ipc::Request), 0);
 		}
 		else {

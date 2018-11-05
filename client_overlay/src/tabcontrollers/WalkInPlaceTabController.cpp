@@ -86,15 +86,28 @@ namespace walkinplace {
 				hasInititalizedLocoCont = true;
 			} 
 			catch (std::exception& e) {
-				LOG(INFO) << "Exception caught while updating virtual pose: " << e.what();
+				LOG(INFO) << "Exception caught while initializing virtual mode: " << e.what();
 			}
 		}
 		if (_controlUsedID > 0) {
-			vrwalkinplace::VRWalkInPlace vrwalkinplace;
-			vrwalkinplace.connect();
-			vr::VRControllerState_t state;
-			vr::VRSystem()->GetControllerState(_controlUsedID, &state, sizeof(state));
-			vrwalkinplace.openvrUpdateState(_controlUsedID, state);
+			try {
+				vr::VRControllerState_t state;
+				vrwalkinplace::VRWalkInPlace vrwalkinplace;
+				vrwalkinplace.connect();
+				vr::VRSystem()->GetControllerState(_controlUsedID, &state, sizeof(state));
+				vrwalkinplace.openvrUpdateState(1, state);
+				/*if (_controllerDeviceIds[0] > 0) {
+					vr::VRSystem()->GetControllerState(_controllerDeviceIds[0], &state, sizeof(state));
+					vrwalkinplace.openvrUpdateState(0, state);
+				}
+				if (_controllerDeviceIds[1] > 0) {
+					vr::VRSystem()->GetControllerState(_controllerDeviceIds[1], &state, sizeof(state));
+					vrwalkinplace.openvrUpdateState(1, state);
+				}*/
+			}
+			catch (std::exception& e) {
+				LOG(INFO) << "Exception caught while updating virtual state: " << e.what();
+			}
 		}
 		if (stepDetectEnabled) {
 			applyStepPoseDetect();
@@ -160,79 +173,6 @@ namespace walkinplace {
 		else {
 			settingsUpdateCounter++;
 		}
-		/*double deltatime = 1.0 / 10.0 * 1000;
-		auto now = std::chrono::duration_cast <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-		double tdiff = ((double)(now - _timeLastTick));
-		//LOG(INFO) << "DT: " << tdiff;
-		if (tdiff >= deltatime) {
-			if (stepDetectEnabled) {
-				if (_controllerDeviceIds[_controlUsedID] >= 0) {
-					vrwalkinplace::VRWalkInPlace vrwalkinplace;
-					vrwalkinplace.connect();
-					//vr::VRControllerState_t state;
-					//vr::VRSystem()->GetControllerState(_controllerDeviceIds[0], &state, sizeof(state));
-					//vrwalkinplace.openvrUpdateState(_controllerDeviceIds[0], state);
-					vr::TrackedDevicePose_t pose = latestDevicePoses[_controllerDeviceIds[_controlUsedID]];
-					vr::DriverPose_t driverPose;
-					driverPose.poseIsValid = pose.bPoseIsValid;
-					driverPose.poseTimeOffset = 0;
-					driverPose.qRotation = vrmath::quaternionFromRotationMatrix(pose.mDeviceToAbsoluteTracking);
-					auto m = pose.mDeviceToAbsoluteTracking.m;
-					driverPose.vecPosition[0] = m[0][3];
-					driverPose.vecPosition[1] = m[1][3];
-					driverPose.vecPosition[2] = m[2][3];
-					driverPose.vecVelocity[0] = pose.vVelocity.v[0];
-					driverPose.vecVelocity[1] = pose.vVelocity.v[1];
-					driverPose.vecVelocity[2] = pose.vVelocity.v[2];
-					vrwalkinplace.openvrUpdatePose(_controllerDeviceIds[_controlUsedID], driverPose);
-				}
-				if (_controllerDeviceIds[1] >= 0 && controlSelect == 1) {
-				vrwalkinplace::VRWalkInPlace vrwalkinplace;
-				vrwalkinplace.connect();
-				//vr::VRControllerState_t state;
-				//vr::VRSystem()->GetControllerState(_controllerDeviceIds[1], &state, sizeof(state));
-				//vrwalkinplace.openvrUpdateState(_controllerDeviceIds[1], state);
-				vr::TrackedDevicePose_t pose = latestDevicePoses[_controllerDeviceIds[1]];
-				vr::DriverPose_t driverPose;
-				driverPose.poseIsValid = pose.bPoseIsValid;
-				driverPose.poseTimeOffset = 0;
-				driverPose.qRotation = vrmath::quaternionFromRotationMatrix(pose.mDeviceToAbsoluteTracking);
-				auto m = pose.mDeviceToAbsoluteTracking.m;
-				driverPose.vecPosition[0] = m[0][3];
-				driverPose.vecPosition[1] = m[1][3];
-				driverPose.vecPosition[2] = m[2][3];
-				driverPose.vecVelocity[0] = pose.vVelocity.v[0];
-				driverPose.vecVelocity[1] = pose.vVelocity.v[1];
-				driverPose.vecVelocity[2] = pose.vVelocity.v[2];
-				vrwalkinplace.openvrUpdatePose(_controllerDeviceIds[1], driverPose);
-				}*/
-			/*	try {
-					vrwalkinplace::VRWalkInPlace vrwalkinplace;
-					if (!vrwalkinplace.isConnected() ) {
-						vrwalkinplace.connect();
-					}
-					vr::TrackedDevicePose_t pose = latestDevicePoses[firstTrackerID];
-					if ( pose.bDeviceIsConnected && pose.bPoseIsValid) {
-						vr::DriverPose_t driverPose;
-						driverPose.poseIsValid = pose.bPoseIsValid;
-						driverPose.poseTimeOffset = 0;
-						driverPose.qRotation = vrmath::quaternionFromRotationMatrix(pose.mDeviceToAbsoluteTracking);
-						auto m = pose.mDeviceToAbsoluteTracking.m;
-						driverPose.vecPosition[0] = m[0][3];
-						driverPose.vecPosition[1] = m[1][3];
-						driverPose.vecPosition[2] = m[2][3];
-						driverPose.vecVelocity[0] = pose.vVelocity.v[0];
-						driverPose.vecVelocity[1] = pose.vVelocity.v[1];
-						driverPose.vecVelocity[2] = pose.vVelocity.v[2];
-						vrwalkinplace.openvrUpdatePose(firstTrackerID, driverPose);
-						//vrwalkinplace.disconnect();
-					}
-				}
-				catch (std::exception& e) {
-					LOG(INFO) << "Exception caught while updating virtual pose: " << e.what();
-				}
-			}
-		}*/
 	}
 
 	void WalkInPlaceTabController::handleEvent(const vr::VREvent_t&) {
@@ -779,12 +719,13 @@ namespace walkinplace {
 
 	void WalkInPlaceTabController::enableStepDetection(bool enable) {
 		stepDetectEnabled = enable;
-		/*if (enable) {
+		if (!hasInititalizedLocoCont && enable) {
 			vrwalkinplace::VRWalkInPlace vrwalkinplace;
 			vrwalkinplace.connect();
 			vrwalkinplace.openvrEnableDriver(enable);
+			hasInititalizedLocoCont = true;
 			//vr::VRProperties()->SetInt32Property(vr::VRProperties()->TrackedDeviceToPropertyContainer(_controllerDeviceIds[0]), vr::Prop_ControllerRoleHint_Int32, vr::ETrackedControllerRole::TrackedControllerRole_LeftHand);
-		}*/
+		}
 		//_controllerDeviceIds[0] = -1;
 		//_controllerDeviceIds[1] = -1;
 	}
@@ -959,17 +900,17 @@ namespace walkinplace {
 	void WalkInPlaceTabController::setControlSelect(int control) {
 		controlSelect = control;
 		if (control < 2) {
-			if (_controllerDeviceIds[control] > 0) {
+			if (_controllerDeviceIds[controlSelect] > 0) {
 				try {
 					vrwalkinplace::VRWalkInPlace vrwalkinplace;
 					vrwalkinplace.connect();
-					vrwalkinplace.openvrDeviceAdded(_controllerDeviceIds[control]);// , true);
+					vrwalkinplace.openvrDeviceAdded(_controllerDeviceIds[controlSelect], controlSelect == 1, false);// , true);
 				}
 				catch (std::exception& e) {
 					LOG(INFO) << "Exception caught while mapping controller: " << e.what();
 				}
 			}
-			_controlUsedID = _controllerDeviceIds[control];
+			_controlUsedID = _controllerDeviceIds[controlSelect];
 			if (!identifyControlTimerSet && _controlUsedID >= 0) {
 				identifyControlLastTime = std::chrono::duration_cast <std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 				controlSelectOverlayHandle = 999;
@@ -998,6 +939,19 @@ namespace walkinplace {
 					vive_controller_model_index = 24;
 				}
 				setDeviceRenderModel(controlSelectOverlayHandle, vive_controller_model_index, 0, 1, 0, 1.1, 1.1, 1.1);
+			}
+		}
+	}
+
+	void WalkInPlaceTabController::reinitVirContToCurHand() {
+		if (_controllerDeviceIds[controlSelect] > 0) {
+			try {
+				vrwalkinplace::VRWalkInPlace vrwalkinplace;
+				vrwalkinplace.connect();
+				vrwalkinplace.openvrDeviceAdded(_controllerDeviceIds[controlSelect], controlSelect == 1, true);// , true);
+			}
+			catch (std::exception& e) {
+				LOG(INFO) << "Exception caught while mapping controller: " << e.what();
 			}
 		}
 	}
@@ -1101,50 +1055,10 @@ namespace walkinplace {
 				updateAccuracyButtonState(_controllerDeviceIds[1], false);
 			}
 		}
-		if (!mappedControllerDriver1) {
-			if (_controllerDeviceIds[0] >= 0) {
-				try {
-					vrwalkinplace::VRWalkInPlace vrwalkinplace;
-					vrwalkinplace.connect();
-					vrwalkinplace.openvrDeviceAdded(_controllerDeviceIds[0]);// , true);
-					mappedControllerDriver1 = true;
-				}
-				catch (std::exception& e) {
-					LOG(INFO) << "Exception caught while mapping controller 1: " << e.what();
-				}
-			}
-		}
 		bool moveButtonCheck = accuracyButtonOnOrDisabled();
 		if (moveButtonCheck) {
 			if (tdiff >= deltatime) {
 				vr::VRSystem()->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseStanding, 0.0f, latestDevicePoses, vr::k_unMaxTrackedDeviceCount);
-				if (_controlUsedID > 0) {
-					/*vrwalkinplace::VRWalkInPlace vrwalkinplace;
-					vrwalkinplace.connect();
-					vr::VRControllerState_t state;
-					vr::VRSystem()->GetControllerState(_controlUsedID, &state, sizeof(state));
-					vrwalkinplace.openvrUpdateState(_controlUsedID, state);*/
-					/*vr::TrackedDevicePose_t pose = latestDevicePoses[_controlUsedID];
-					if (pose.bPoseIsValid) {
-						vr::DriverPose_t driverPose;
-						driverPose.poseIsValid = pose.bPoseIsValid;
-						driverPose.poseTimeOffset = 0;
-						driverPose.qRotation = vrmath::quaternionFromRotationMatrix(pose.mDeviceToAbsoluteTracking);
-						auto m = pose.mDeviceToAbsoluteTracking.m;
-						driverPose.vecPosition[0] = m[0][3];
-						driverPose.vecPosition[1] = m[1][3];
-						driverPose.vecPosition[2] = m[2][3];
-						driverPose.vecVelocity[0] = pose.vVelocity.v[0];
-						driverPose.vecVelocity[1] = pose.vVelocity.v[1];
-						driverPose.vecVelocity[2] = pose.vVelocity.v[2];
-						try {
-							vrwalkinplace.openvrUpdatePose(_controlUsedID, driverPose);
-						}
-						catch (std::exception& e) {
-							LOG(INFO) << "Exception caught while updating virtual pose: " << e.what();
-						}
-					}*/
-				}
 				if (!_stepPoseDetected) {
 					bool firstController = true;
 					for (auto info : deviceInfos) {
@@ -1705,8 +1619,8 @@ namespace walkinplace {
 	/*********************************************************************************************/
 
 
-	void WalkInPlaceTabController::stopMovement(uint32_t deviceIdOLD) {
-		uint32_t deviceId = vrLocoContID;
+	void WalkInPlaceTabController::stopMovement(uint32_t deviceId) {
+		//uint32_t deviceId = vrLocoContID;
 		if (gameType == 0 || gameType == 1 || gameType == 2) {
 			vr::VRControllerAxis_t axisState;
 			axisState.x = 0;
@@ -1811,8 +1725,8 @@ namespace walkinplace {
 		}
 	}
 
-	void WalkInPlaceTabController::applyAxisMovement(uint32_t deviceIdOLD, vr::VRControllerAxis_t axisState) {
-		uint32_t deviceId = vrLocoContID;
+	void WalkInPlaceTabController::applyAxisMovement(uint32_t deviceId, vr::VRControllerAxis_t axisState) {
+		//uint32_t deviceId = vrLocoContID;
 		vrwalkinplace::VRWalkInPlace vrwalkinplace;
 		vrwalkinplace.connect();
 		if (gameType == 0 || gameType == 1 || gameType == 2) {
